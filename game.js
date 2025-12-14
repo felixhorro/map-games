@@ -386,10 +386,6 @@ document.addEventListener('DOMContentLoaded', () => {
       "name": "Vosgos",
       "x": 1005,
       "y": 1299
-    },
-    {
-      "category": "Desconocidos",
-      "name": "Etha"
     }
   ];
 
