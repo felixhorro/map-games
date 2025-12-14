@@ -214,13 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       "category": "Otros (Obligatorio)",
-      "name": "Elba",
-      // Missing in new JSON? Added safely
-      "x": 1200,
-      "y": 1900
-    },
-    {
-      "category": "Otros (Obligatorio)",
       "name": "Etna",
       "x": 1285,
       "y": 1976
