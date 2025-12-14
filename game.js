@@ -395,13 +395,35 @@ document.addEventListener('DOMContentLoaded', () => {
   const REF_HEIGHT = 2152;
 
   // Convert allPlaces absolute coordinates to Percentages 0-100
-  // User feedback: Dots are shifted right. Correction: -1.5% on X.
-  const X_OFFSET_PCT = -1.5;
+  // User feedback REVISED: "Central dots ok, Corners too near center" -> Compression.
+  // Also "Italy was too Right" (Italy is Left of Center, so "Too Right" = Pulled to Center = Compressed).
+  // Fix: EXPAND coordinates from Center.
+  // Previous linear offset removed in favor of Radial Scale.
+
+  const COORD_SCALE = 1.04; // Start with 4% expansion
+  const REF_MID_X = REF_WIDTH / 2;
+  const REF_MID_Y = REF_HEIGHT / 2;
 
   allPlaces.forEach(p => {
     if (p.x !== undefined && p.y !== undefined) {
-      p.xPct = (p.x / REF_WIDTH) * 100 + X_OFFSET_PCT;
-      p.yPct = (p.y / REF_HEIGHT) * 100;
+      // 1. Center logic
+      let dx = p.x - REF_MID_X;
+      let dy = p.y - REF_MID_Y;
+
+      // 2. Scale
+      dx *= COORD_SCALE;
+      dy *= COORD_SCALE;
+
+      // 3. New Absolute
+      const newX = REF_MID_X + dx;
+      const newY = REF_MID_Y + dy;
+
+      // 4. Convert to Pct
+      p.xPct = (newX / REF_WIDTH) * 100;
+      p.yPct = (newY / REF_HEIGHT) * 100;
+
+      // Store scaled absolute for click detection ref?
+      // Actually we calculate clicks based on ref... better to match p.xPct approach in handleMapClick
     }
   });
 
