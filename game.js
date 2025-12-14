@@ -415,6 +415,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Dots are appended to mapWrapper? No, now map-container-inner
   const mapContainerInner = document.getElementById('map-container-inner'); // wrapper for relative pos
 
+  const messageBox = document.getElementById('message-box');
+  const placesList = document.getElementById('places-list');
+  const scoreHeader = document.getElementById('score-header');
+
   // State for toggles
   let showHints = false;
   let isSolved = false;
