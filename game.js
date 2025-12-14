@@ -387,75 +387,74 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
-  // Heuristic corrections removed per user request. Using original JSON coordinates.
+  // ---------------------------------------------------------
+  // REFACTOR: Relative Coordinates
+  // ---------------------------------------------------------
+  // Reference Dimensions (from actual map.jpg)
+  const REF_WIDTH = 3000;
+  const REF_HEIGHT = 2152;
+
+  // Convert allPlaces absolute coordinates to Percentages 0-100
+  // User feedback: Dots are shifted right. Correction: -1.5% on X.
+  const X_OFFSET_PCT = -1.5;
+
+  allPlaces.forEach(p => {
+    if (p.x !== undefined && p.y !== undefined) {
+      p.xPct = (p.x / REF_WIDTH) * 100 + X_OFFSET_PCT;
+      p.yPct = (p.y / REF_HEIGHT) * 100;
+    }
+  });
 
   let remainingPlaces = [...allPlaces];
-  let foundPlaces = []; // IDs or names
-  let currentTarget = null; // The place closest to where user clicked
-
-  // Logic Change:
-  // 1. Show all remaining places in sidebar.
-  // 2. When user clicks map -> Find nearest place.
-  // 3. Instead of asking "What is this?", we check if the nearest place corresponds to the currently SELECTED place in the sidebar?
-  //    OR: User clicks map -> We highlight the nearest place. User then clicks that place in the list to confirm?
-  //    User Request: "When the user clicks on the map then it should click on a place in the right column... user success... place disappear"
-  //    Wait, "it should click on a place in the right column" implies the user clicks the MAP, and then does the user have to guess?
-  //    "so there is no need of a popup and no need for confirmation button."
-  //    Interpretation:
-  //    Two modes of input:
-  //    A) User clicks a place in the Sidebar FIRST. Then clicks the Map to place it? (Common geography game style).
-  //    B) user Request says: "User clicks on the map... then it should CLICK on a place in the right column".
-  //       This implies: User clicks Map -> Game figures out which place is nearest -> Game HIGHLIGHTS/SELECTS that place in the list?
-  //       But if the user just clicks the map, and the game selects the right answer in the list automatically, where is the challenge?
-  //       Ah, "selector offers the player all the places left. The user choose one... if it is the right one...".
-  //       So:
-  //       1. User clicks Map (e.g. on Paris).
-  //       2. Game shows dot on Paris.
-  //       3. Game HIGHLIGHTS the list / Scrolls to it? Or maybe just WAITS for user to click the name "Paris" in the list?
-  //       "When the user clicks on the map then it should click on a place in the right column" -> This phrasing is confusing properly.
-  //       Context: "Selector offers the player all the places left. The user choose one".
-  //       So: Map Click -> Dot appears -> User must finding the corresponding name in the list and CLICK IT.
-  //       If Correct -> Done.
-  //       If Incorrect -> Advice.
-
-  let currentNearest = null;
+  let foundPlaces = [];
+  let currentTarget = null;
 
   // DOM Elements
   const mapImg = document.getElementById('map-img');
-  const mapWrapper = document.getElementById('map-wrapper');
+  // We need the CONTAINER where dots are appended to calculate relative clicks correctly
+  // Dots are appended to mapWrapper? No, now map-container-inner
+  const mapContainerInner = document.getElementById('map-container-inner'); // wrapper for relative pos
+
   const messageBox = document.getElementById('message-box');
-  // DOM Elements - Re-query for sidebar
   const placesList = document.getElementById('places-list');
+  const scoreHeader = document.getElementById('score-header');
+
   // Initialize
   initGame();
 
   function initGame() {
     mapImg.addEventListener('click', handleMapClick);
     renderSidebar();
-    console.log("Juego iniciado. Haz clic en el mapa y luego selecciona el nombre en la lista.");
+    updateScoreUI(); // Initial Score
+    console.log("Juego iniciado.");
+  }
+
+  function updateScoreUI() {
+    if (scoreHeader) {
+      const total = allPlaces.length;
+      const found = total - remainingPlaces.length;
+      scoreHeader.innerText = `${found}/${total} sitios encontrados`;
+    }
   }
 
 
   function showMessage(text, type = "info", duration = 3000) {
-    // Message box is now inside map-wrapper or generic
-    const msgBox = document.getElementById('message-box');
-    if (!msgBox) return; // safety
+    if (!messageBox) return;
 
-    msgBox.innerText = text;
-    msgBox.className = "";
-    if (type) msgBox.classList.add(type);
-    msgBox.classList.remove("hidden");
+    messageBox.innerText = text;
+    messageBox.className = "";
+    if (type) messageBox.classList.add(type);
+    messageBox.classList.remove("hidden");
 
     if (duration > 0) {
       setTimeout(() => {
-        msgBox.classList.add("hidden");
+        messageBox.classList.add("hidden");
       }, duration);
     }
   }
 
   function renderSidebar() {
     placesList.innerHTML = '';
-    // Sort
     remainingPlaces.sort((a, b) => a.name.localeCompare(b.name));
 
     remainingPlaces.forEach(p => {
@@ -463,130 +462,52 @@ document.addEventListener('DOMContentLoaded', () => {
       li.className = 'place-item';
       li.innerText = p.name;
       li.dataset.name = p.name;
-      li.onclick = () => handleListClick(p);
+      li.onclick = () => handleListClick(p, li);
       placesList.appendChild(li);
     });
   }
 
-  // Helper: Find nearest place from ALL places (or remaining? Prompt says "nearest point is revealed... selector offers player all the places left")
-  // If the user clicks on a place they already found, maybe nothing happens or it says "Already found".
-  // Let's assume we find the nearest place from the FULL list. If it's already found, ignore it.
-  function findNearestPlace(x, y) {
-    let nearest = null;
-    let minDist = Infinity;
-
-    // We need to scale the click coordinates to the natural image dimensions
-    const rect = mapImg.getBoundingClientRect();
-
-    // Clicks are relative to viewport? No, event.clientX
-    // But mapImg has object-fit. This is tricky. 
-    // If object-fit: contain is used, there might be whitespace within the element box if aspect ratios differ.
-    // However, we set max-width/height. 
-    // Simplest robust way: 
-    // Get natural dimensions
-    const naturalW = mapImg.naturalWidth;
-    const naturalH = mapImg.naturalHeight;
-
-    // Get displayed dimensions of the IMAGE ITSELF (excluding letterbox)
-    // Ratio
-    const renderRatio = rect.width / rect.height;
-    const naturalRatio = naturalW / naturalH;
-
-    let displayW, displayH, offsetX, offsetY;
-
-    if (renderRatio > naturalRatio) {
-      // Image is height-constrained (pillarbox)
-      displayH = rect.height;
-      displayW = displayH * naturalRatio;
-      offsetX = (rect.width - displayW) / 2;
-      offsetY = 0;
-    } else {
-      // Image is width-constrained (letterbox)
-      displayW = rect.width;
-      displayH = displayW / naturalRatio;
-      offsetX = 0;
-      offsetY = (rect.height - displayH) / 2;
-    }
-
-    // Click relative to image content
-    // e.clientX - rect.left - offsetX
-    // Let's passed in x, y are already clientX, clientY relative to viewport
-    // Wait, handleMapClick receives event.
-
-    return null; // Logic moved to handleMapClick
-  }
-
-  function getClickCoords(e) {
-    const rect = mapImg.getBoundingClientRect();
-    const naturalW = mapImg.naturalWidth;
-    const naturalH = mapImg.naturalHeight;
-
-    // Calculate the actual size and position of the image within the element
-    const elementRatio = rect.width / rect.height;
-    const naturalRatio = naturalW / naturalH;
-
-    let displayedWidth, displayedHeight, xOffset, yOffset;
-
-    if (elementRatio > naturalRatio) {
-      // Limited by height
-      displayedHeight = rect.height;
-      displayedWidth = displayedHeight * naturalRatio;
-      xOffset = (rect.width - displayedWidth) / 2;
-      yOffset = 0;
-    } else {
-      // Limited by width
-      displayedWidth = rect.width;
-      displayedHeight = displayedWidth / naturalRatio;
-      xOffset = 0;
-      yOffset = (rect.height - displayedHeight) / 2;
-    }
-
-    // Click position relative to the element
-    const clickXInElement = e.clientX - rect.left;
-    const clickYInElement = e.clientY - rect.top;
-
-    // Check if click is within the image area
-    if (clickXInElement < xOffset || clickXInElement > xOffset + displayedWidth ||
-      clickYInElement < yOffset || clickYInElement > yOffset + displayedHeight) {
-      return null; // Clicked in letterbox area
-    }
-
-    // Map to natural coordinates
-    const xInImage = clickXInElement - xOffset;
-    const yInImage = clickYInElement - yOffset;
-
-    const scaleX = naturalW / displayedWidth;
-    const scaleY = naturalH / displayedHeight;
-
-    return {
-      x: Math.round(xInImage * scaleX),
-      y: Math.round(yInImage * scaleY),
-      // We also need visual coords relative to the map-wrapper (which should match the image rect approx?)
-      // Actually, map-wrapper wraps map-img.
-      // visualX relative to map-wrapper:
-      // map-wrapper should ideally be same size as image? 
-      // The dots are absolute in map-wrapper.
-      // Let's recalculate visual pos for the dot.
-      // map-wrapper is size of the container, but we want dot on valid pixels.
-      // Let's pass back the percentage within the element to place the dot?
-      // Actually, best to place dot using Top/Left % of the wrapper?
-
-      // "When user clicks... nearest point is revealed... just a dot".
-      // The dot should be at the NEAREST POINT's location, not the click location.
-    };
-  }
-
+  // Handle Map Clicks
+  // Now we calculate clicks relative to the IMAGE visual display and convert to %.
   function handleMapClick(e) {
-    const coords = getClickCoords(e);
-    if (!coords) return;
+    // e.target should be mapImg (or dot?)
+    if (e.target !== mapImg && e.target.parentNode !== mapContainerInner) return;
 
-    // Find nearest
+    const rect = mapImg.getBoundingClientRect();
+
+    // Click position relative to the image element
+    const clientX = e.clientX - rect.left;
+    const clientY = e.clientY - rect.top;
+
+    // Check bounds
+    if (clientX < 0 || clientX > rect.width || clientY < 0 || clientY > rect.height) return;
+
+    // Convert to Percentage
+    const clickPctX = (clientX / rect.width) * 100;
+    const clickPctY = (clientY / rect.height) * 100;
+
+    // Find nearest place using PCT distance
+    // We compare against p.xPct and p.yPct which include the offsets.
+    // To ensure isotropic distance (circles are circles), we should account for aspect ratio of the REFERENCE map.
+    // REF_WIDTH = 3000, REF_HEIGHT = 2152. Ratio = 1.39.
+    // 1% of Width = 30px. 1% of Height = 21.52px.
+    // So dy_pct should be scaled by (21.52/30) = 0.717 to match dx_pct scale?
+    // Or just map back to Reference Pixels:
+
+    const clickRefX = (clickPctX / 100) * REF_WIDTH;
+    const clickRefY = (clickPctY / 100) * REF_HEIGHT;
+
     let nearest = null;
     let minDist = Infinity;
 
     for (const place of allPlaces) {
-      const dx = place.x - coords.x;
-      const dy = place.y - coords.y;
+      // Compare click (in ref pixels) vs Place location (in ref pixels derived from adjusted %)
+      // place.xPct is the VISUAL center. We want to click near the visual center.
+      const placeVisualX = (place.xPct / 100) * REF_WIDTH;
+      const placeVisualY = (place.yPct / 100) * REF_HEIGHT;
+
+      const dx = placeVisualX - clickRefX;
+      const dy = placeVisualY - clickRefY;
       const dist = Math.sqrt(dx * dx + dy * dy);
 
       if (dist < minDist) {
@@ -596,9 +517,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (nearest) {
-      // Check if found
-      const notFound = remainingPlaces.find(p => p.name === nearest.name);
-      if (!notFound) {
+      // Check if already found
+      const isRemaining = remainingPlaces.find(p => p.name === nearest.name);
+      if (!isRemaining) {
         showMessage(`Ya has encontrado ${nearest.name}.`, "info");
         return;
       }
@@ -607,46 +528,28 @@ document.addEventListener('DOMContentLoaded', () => {
       showDot(nearest);
 
       // Visual feedback? Scroll list?
-      // showMessage("¿Qué lugar es este? Selecciónalo en la lista.", "info", 0);
+      // No text prompt as requested
+
+      // NEW: Clear error states (red items) when a new dot is placed
+      // We can re-render to clear all classes, or check for .failed
+      renderSidebar();
     }
   }
 
   function showDot(place) {
-    // Remove old ACTIVE dot, keep CORRECT dots
+    // Remove old active
     const old = document.querySelector('.dot.active');
     if (old) old.remove();
 
     const dot = document.createElement('div');
     dot.className = 'dot active';
 
-    // Calculation logic same as before...
-    // We need robust visual positioning.
-    const rect = mapImg.getBoundingClientRect();
-    const naturalW = mapImg.naturalWidth;
-    const naturalH = mapImg.naturalHeight;
-    const elementRatio = rect.width / rect.height;
-    const naturalRatio = naturalW / naturalH;
+    // Use Percentage Coordinates
+    dot.style.left = place.xPct + '%';
+    dot.style.top = place.yPct + '%';
 
-    let displayedWidth, displayedHeight, xOffset, yOffset;
-    if (elementRatio > naturalRatio) {
-      displayedHeight = rect.height;
-      displayedWidth = displayedHeight * naturalRatio;
-      xOffset = (rect.width - displayedWidth) / 2;
-      yOffset = 0;
-    } else {
-      displayedWidth = rect.width;
-      displayedHeight = displayedWidth / naturalRatio;
-      xOffset = 0;
-      yOffset = (rect.height - displayedHeight) / 2;
-    }
-
-    const visualX = xOffset + (place.x / naturalW) * displayedWidth;
-    const visualY = yOffset + (place.y / naturalH) * displayedHeight;
-
-    dot.style.left = visualX + 'px';
-    dot.style.top = visualY + 'px';
-
-    mapWrapper.appendChild(dot);
+    // Append to the relative container
+    mapContainerInner.appendChild(dot);
   }
 
   function handleListClick(place, listItem) {
@@ -659,16 +562,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // Correct
       showMessage("¡Correcto!", "success");
 
-      // Logic: Remove from list, Mark as found
       const idx = remainingPlaces.findIndex(p => p.name === place.name);
       if (idx > -1) remainingPlaces.splice(idx, 1);
 
-      // Clear all failed states
-      // Actually, re-rendering clears them.
       renderSidebar();
-      // updateScore(); // element removed
+      updateScoreUI();
 
-      // Update dot
+      // Update dot style
       const activeDot = document.querySelector('.dot.active');
       if (activeDot) {
         activeDot.classList.remove('active');
@@ -680,7 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
         label.innerText = currentTarget.name;
         label.style.left = activeDot.style.left;
         label.style.top = activeDot.style.top;
-        mapWrapper.appendChild(label);
+        mapContainerInner.appendChild(label);
       }
 
       currentTarget = null;
@@ -692,21 +592,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       // Incorrect
       showMessage("Incorrecto.", "error");
-      // Mark item as failed (redish)
-      // We need ref to list item.
-      // renderSidebar needs update to pass element or ID? 
-      // We passed 'place' object. We can find the element by dataset.
       const item = placesList.querySelector(`li[data-name="${place.name}"]`);
       if (item) {
         item.classList.add('failed');
       }
     }
   }
-
-  // Keep getClickCoords as is
-
-  // Handle window resize to reposition dots? 
-  // Ideally we should but for prototype maybe not strictly required.
-  // Let's add simple listener to clear dots if resize happens (brute force) or re-calc.
-  // For now, accept dots might drift on resize.
 });

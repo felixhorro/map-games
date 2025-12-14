@@ -22,7 +22,10 @@ html {
 #map-wrapper {
     flex: 1;
     position: relative;
-    /* Center content */
+    /* Maintain aspect ratio */
+    width: 100%;
+    /* 3000 / 2152 approx 1.394 */
+    /* We want the map to fit within the container. */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -30,16 +33,28 @@ html {
     background-color: #333;
 }
 
+#map-container-inner {
+    position: relative;
+    /* Use max-width/height to fit availability */
+    /* The image defines the size */
+    max-width: 100%;
+    max-height: 100%;
+}
+
 #map-img {
     display: block;
     max-width: 100%;
-    max-height: 100%;
+    max-height: 100vh;
+    /* Limit to viewport height if needed? */
+    height: auto;
     object-fit: contain;
     cursor: crosshair;
 }
 
 .dot {
     position: absolute;
+    width: 1.2%;
+    /* Relative size? or fixed px? Fixed is better for visibility usually */
     width: 12px;
     height: 12px;
     background-color: #ffcc00;
@@ -63,26 +78,35 @@ html {
     width: 250px;
     background: #f4f4f4;
     color: #333;
-    overflow-y: auto;
     border-left: 2px solid #ccc;
-    /* if on right */
+    /* Flex layout for fixed header + scrollable list */
     display: flex;
     flex-direction: column;
+    height: 100%;
+    /* Ensure it fills container height to allow internal scrolling */
+    overflow: hidden;
+    /* Prevent sidebar itself from scrolling */
 }
 
-#sidebar h3 {
-    padding: 10px;
-    margin: 0;
+#score-header {
+    padding: 15px;
     background: #e0e0e0;
     text-align: center;
     border-bottom: 1px solid #ccc;
-    font-size: 1rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    /* Don't shrink */
 }
 
 #places-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    overflow-y: auto;
+    /* Scroll ONLY the list */
+    flex: 1;
+    /* Take remaining height */
 }
 
 .place-item {
