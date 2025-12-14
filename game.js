@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       "category": "Ríos (Obligatorio)",
       "name": "Po",
-      "x": 1234,
-      "y": 1683
+      "x": 1134,
+      "y": 1523
     },
     {
       "category": "Ríos (Obligatorio)",
