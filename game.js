@@ -415,18 +415,125 @@ document.addEventListener('DOMContentLoaded', () => {
   // Dots are appended to mapWrapper? No, now map-container-inner
   const mapContainerInner = document.getElementById('map-container-inner'); // wrapper for relative pos
 
-  const messageBox = document.getElementById('message-box');
-  const placesList = document.getElementById('places-list');
-  const scoreHeader = document.getElementById('score-header');
+  // State for toggles
+  let showHints = false;
+  let isSolved = false;
+
+  const btnTogglePoints = document.getElementById('btn-toggle-points');
+  const btnToggleSolve = document.getElementById('btn-toggle-solve');
 
   // Initialize
   initGame();
 
   function initGame() {
     mapImg.addEventListener('click', handleMapClick);
+
+    // Button listeners
+    btnTogglePoints.addEventListener('click', toggleHints);
+    btnToggleSolve.addEventListener('click', toggleSolve);
+
     renderSidebar();
     updateScoreUI(); // Initial Score
     console.log("Juego iniciado.");
+  }
+
+  function toggleHints() {
+    if (isSolved) return; // Disable if solved
+    showHints = !showHints;
+    btnTogglePoints.innerText = showHints ? "Ocultar puntos" : "Mostrar puntos";
+
+    // Update map dots
+    renderDots();
+  }
+
+  function toggleSolve() {
+    isSolved = !isSolved;
+
+    if (isSolved) {
+      btnToggleSolve.innerText = "Ocultar respuestas";
+      btnTogglePoints.disabled = true;
+      // Disable interactions
+      mapImg.style.pointerEvents = 'none';
+      placesList.style.pointerEvents = 'none';
+    } else {
+      btnToggleSolve.innerText = "Resolver";
+      btnTogglePoints.disabled = false;
+      // Enable interactions
+      mapImg.style.pointerEvents = 'auto';
+      placesList.style.pointerEvents = 'auto';
+    }
+
+    renderDots();
+  }
+
+  // Refactored Render Dots to handle all states (Active, Hint, Solved, Correct)
+  function renderDots() {
+    // Clear all dots and labels derived from game state (keep existing structure?)
+    // Actually, we've been appending dots incrementally. 
+    // To support "Ocultar", we should probably clear the board and re-render.
+    // But we need to keep "Correct" dots stable? 
+    // Let's implement a full re-render of dots/labels.
+
+    // Clear all children except mapImg and messageBox
+    Array.from(mapContainerInner.children).forEach(child => {
+      if (child !== mapImg && child !== messageBox) {
+        child.remove();
+      }
+    });
+
+    // 1. Render FOUND places (Always visible as Correct)
+    // We need to know which are found. 
+    // We have 'remainingPlaces'. foundPlaces is not tracked well, derived?
+    // const total = allPlaces.length;
+    // found = allPlaces - remaining.
+    // Let's iterate ALL places.
+
+    allPlaces.forEach(p => {
+      const isFound = !remainingPlaces.find(r => r.name === p.name);
+
+      if (isFound) {
+        createDot(p, 'correct');
+        createLabel(p);
+      } else {
+        // Not found (Remaining)
+        if (isSolved) {
+          // Show EVERYTHING
+          createDot(p, 'correct'); // Or special color for reveal? "correct" is fine.
+          createLabel(p);
+        } else if (showHints) {
+          // Show hint dot (unresolved)
+          // Start with active?
+          // If this places IS the currentTarget, it is 'active'.
+          if (currentTarget && currentTarget.name === p.name) {
+            createDot(p, 'active');
+          } else {
+            createDot(p, 'hint');
+          }
+        } else {
+          // Normal mode: Only show if active
+          if (currentTarget && currentTarget.name === p.name) {
+            createDot(p, 'active');
+          }
+        }
+      }
+    });
+  }
+
+  function createDot(p, type) {
+    const dot = document.createElement('div');
+    dot.className = `dot ${type}`;
+    dot.style.left = p.xPct + '%';
+    dot.style.top = p.yPct + '%';
+    mapContainerInner.appendChild(dot);
+  }
+
+  function createLabel(p) {
+    const label = document.createElement('div');
+    label.className = 'place-label';
+    label.innerText = p.name;
+    label.style.left = p.xPct + '%';
+    label.style.top = p.yPct + '%';
+    mapContainerInner.appendChild(label);
   }
 
   function updateScoreUI() {
@@ -470,6 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Handle Map Clicks
   // Now we calculate clicks relative to the IMAGE visual display and convert to %.
   function handleMapClick(e) {
+    if (isSolved) return; // Block clicks if solved (though pointer-events handled it)
     // e.target should be mapImg (or dot?)
     if (e.target !== mapImg && e.target.parentNode !== mapContainerInner) return;
 
@@ -525,7 +633,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       currentTarget = nearest;
-      showDot(nearest);
+
+      // Re-render to show active dot (and potentially hints)
+      renderDots();
 
       // Visual feedback? Scroll list?
       // No text prompt as requested
@@ -537,22 +647,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showDot(place) {
-    // Remove old active
-    const old = document.querySelector('.dot.active');
-    if (old) old.remove();
-
-    const dot = document.createElement('div');
-    dot.className = 'dot active';
-
-    // Use Percentage Coordinates
-    dot.style.left = place.xPct + '%';
-    dot.style.top = place.yPct + '%';
-
-    // Append to the relative container
-    mapContainerInner.appendChild(dot);
+    // Deprecated, use renderDots ecosystem
   }
 
   function handleListClick(place, listItem) {
+    if (isSolved) return;
+
     if (!currentTarget) {
       showMessage("Primero haz clic en un punto del mapa.", "error");
       return;
@@ -565,25 +665,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const idx = remainingPlaces.findIndex(p => p.name === place.name);
       if (idx > -1) remainingPlaces.splice(idx, 1);
 
+      currentTarget = null;
+
       renderSidebar();
       updateScoreUI();
-
-      // Update dot style
-      const activeDot = document.querySelector('.dot.active');
-      if (activeDot) {
-        activeDot.classList.remove('active');
-        activeDot.classList.add('correct');
-
-        // Label
-        const label = document.createElement('div');
-        label.className = 'place-label';
-        label.innerText = currentTarget.name;
-        label.style.left = activeDot.style.left;
-        label.style.top = activeDot.style.top;
-        mapContainerInner.appendChild(label);
-      }
-
-      currentTarget = null;
+      renderDots(); // Update map
 
       if (remainingPlaces.length === 0) {
         showMessage("¡JUEGO COMPLETADO!", "success", 10000);
