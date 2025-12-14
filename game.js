@@ -1,389 +1,395 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Embedded Data to avoid CORS issues with file:// protocol
+  // Updated with data from Mapper V2 (User 2025-12-14)
   const allPlaces = [
     {
       "category": "Ríos (Obligatorio)",
       "name": "Vístula",
-      "x": 1396,
-      "y": 1115
+      "x": 1459,
+      "y": 1083
     },
     {
       "category": "Ríos (Obligatorio)",
       "name": "Don",
-      "x": 2175,
-      "y": 1165
+      "x": 2201,
+      "y": 1111
     },
     {
       "category": "Ríos (Obligatorio)",
       "name": "Rin",
-      "x": 1131,
-      "y": 1226
+      "x": 1034,
+      "y": 1169
     },
     {
       "category": "Ríos (Obligatorio)",
       "name": "Sena",
-      "x": 954,
-      "y": 1273
+      "x": 841,
+      "y": 1250
     },
     {
       "category": "Ríos (Obligatorio)",
       "name": "Loira",
-      "x": 897,
+      "x": 758,
       "y": 1325
     },
     {
       "category": "Ríos (Obligatorio)",
       "name": "Ródano",
-      "x": 982,
-      "y": 1508
+      "x": 893,
+      "y": 1527
     },
     {
       "category": "Ríos (Obligatorio)",
       "name": "Po",
-      "x": 1134,
-      "y": 1523
+      "x": 1125,
+      "y": 1532
     },
     {
       "category": "Ríos (Obligatorio)",
       "name": "Danubio",
-      "x": 1602,
-      "y": 1573
+      "x": 1745,
+      "y": 1614
     },
     {
       "category": "Mares (Obligatorio)",
       "name": "Mar Blanco",
-      "x": 1849,
-      "y": 328
+      "x": 1908,
+      "y": 330
     },
     {
       "category": "Mares (Obligatorio)",
       "name": "Mar del Norte",
-      "x": 1050,
-      "y": 800
+      "x": 984,
+      "y": 887
     },
     {
       "category": "Mares (Obligatorio)",
       "name": "Mar Báltico",
-      "x": 1516,
-      "y": 781
+      "x": 1461,
+      "y": 918
     },
     {
       "category": "Mares (Obligatorio)",
       "name": "Mar Caspio",
-      "x": 2578,
-      "y": 1430
+      "x": 2800,
+      "y": 1462
     },
     {
       "category": "Mares (Obligatorio)",
       "name": "Mar Negro",
-      "x": 1982,
-      "y": 1597
+      "x": 2066,
+      "y": 1586
     },
     {
       "category": "Mares (Obligatorio)",
       "name": "Azov",
-      "x": 2083,
-      "y": 1408
+      "x": 2186,
+      "y": 1412
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Islandia",
-      "x": 768,
-      "y": 176
+      "x": 637,
+      "y": 169
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Cabo del Norte",
-      "x": 1602,
-      "y": 63
+      "x": 1639,
+      "y": 56
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Pechora",
-      "x": 2109,
-      "y": 163
+      "x": 2279,
+      "y": 184
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Montañas Urales",
-      "x": 2418,
-      "y": 347
+      "x": 2548,
+      "y": 297
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Islas Feroe",
-      "x": 910,
-      "y": 445
+      "x": 808,
+      "y": 451
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Montes Escandinavos",
-      "x": 1370,
-      "y": 419
+      "x": 1361,
+      "y": 401
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Península Escandinava",
-      "x": 1564,
-      "y": 336
+      "x": 1478,
+      "y": 488
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Volga",
-      "x": 2289,
-      "y": 1035
+      "x": 2472,
+      "y": 902
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Irlanda",
-      "x": 724,
-      "y": 922
+      "x": 552,
+      "y": 946
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Gran Bretaña",
-      "x": 917,
-      "y": 1035
+      "x": 767,
+      "y": 1015
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Ural",
-      "x": 2479,
-      "y": 905
+      "x": 2717,
+      "y": 863
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Elbrus",
-      "x": 2247,
-      "y": 1490
+      "x": 2400,
+      "y": 1497
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Los Alpes",
-      "x": 1105,
-      "y": 1480
+      "x": 1064,
+      "y": 1462
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Mont Blanc",
-      "x": 1048,
-      "y": 1503
+      "x": 997,
+      "y": 1493
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Montes Cárpatos",
-      "x": 1667,
-      "y": 1375
+      "x": 1739,
+      "y": 1419
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Monte Olimpo",
-      "x": 1586,
-      "y": 1816
+      "x": 1609,
+      "y": 1824
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Creta",
-      "x": 1709,
-      "y": 2100
+      "x": 1745,
+      "y": 2098
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Chipre",
-      "x": 2052,
-      "y": 2074
+      "x": 2149,
+      "y": 2072
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Malta",
-      "x": 1317,
-      "y": 2087
+      "x": 1255,
+      "y": 2072
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Sicilia",
-      "x": 1289,
-      "y": 1965
+      "x": 1233,
+      "y": 1961
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Cerdeña",
-      "x": 1096,
-      "y": 1807
+      "x": 1029,
+      "y": 1798
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Elba",
-      "x": 1313,
-      "y": 1965
+      // Missing in new JSON? Added safely
+      "x": 1200,
+      "y": 1900
+    },
+    {
+      "category": "Otros (Obligatorio)",
+      "name": "Etna",
+      "x": 1285,
+      "y": 1976
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Córcega",
-      "x": 1114,
+      "x": 1047,
       "y": 1683
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Golfo de León",
-      "x": 956,
-      "y": 1629
+      "x": 856,
+      "y": 1621
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Islas Baleares",
-      "x": 873,
-      "y": 1785
+      "x": 771,
+      "y": 1792
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Estrecho de Gibraltar",
-      "x": 527,
-      "y": 1876
+      "x": 355,
+      "y": 1877
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Península Ibérica",
-      "x": 545,
-      "y": 1703
+      "x": 431,
+      "y": 1755
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Meseta Central",
-      "x": 626,
-      "y": 1649
+      "x": 483,
+      "y": 1653
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Tajo",
-      "x": 523,
-      "y": 1651
+      "x": 326,
+      "y": 1642
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Ebro",
-      "x": 731,
-      "y": 1577
+      "x": 634,
+      "y": 1636
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Golfo de Vizcaya",
-      "x": 731,
-      "y": 1460
+      "x": 595,
+      "y": 1453
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Aneto",
-      "x": 820,
-      "y": 1571
+      "x": 710,
+      "y": 1590
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Cuenca del Caspio",
-      "x": 2656,
-      "y": 1295
+      "x": 2839,
+      "y": 1171
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Macizo Central",
-      "x": 926,
-      "y": 1451
+      "x": 801,
+      "y": 1545
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Selva Negra",
-      "x": 1142,
-      "y": 1323
-    },
-    {
-      "category": "Otros (Obligatorio)",
-      "name": "Península Balcánica",
-      "x": 1586,
-      "y": 1716
+      "x": 1081,
+      "y": 1315
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Balcanes",
-      "x": 1648,
-      "y": 1688
+      "x": 1710,
+      "y": 1696
+    },
+    {
+      "category": "Otros (Obligatorio)",
+      "name": "Península Balcánica",
+      "x": 1650,
+      "y": 1796
     },
     {
       "category": "Otros (Obligatorio)",
       "name": "Mulhacén",
-      "x": 617,
-      "y": 1820
+      "x": 472,
+      "y": 1837
     },
     {
       "category": "Otros que quiero poner",
       "name": "Cabo de Finisterre",
-      "x": 492,
-      "y": 1438
+      "x": 313,
+      "y": 1434
     },
     {
       "category": "Otros que quiero poner",
       "name": "Cabo de St Vicente",
-      "x": 413,
-      "y": 1757
+      "x": 218,
+      "y": 1755
     },
     {
       "category": "Otros que quiero poner",
       "name": "Mar Mediterráneo",
-      "x": 1000,
-      "y": 1842
+      "x": 888,
+      "y": 1855
     },
     {
       "category": "Otros que quiero poner",
       "name": "Océano Atlántico",
-      "x": 355,
-      "y": 1035
+      "x": 177,
+      "y": 883
     },
     {
       "category": "Otros que quiero poner",
       "name": "Océano Ártico",
-      "x": 1265,
-      "y": 65
+      "x": 1198,
+      "y": 78
     },
     {
       "category": "Otros que quiero poner",
       "name": "Lago Ladoga",
-      "x": 1775,
+      "x": 1825,
       "y": 618
     },
     {
       "category": "Otros que quiero poner",
       "name": "Península Italiana",
-      "x": 1302,
-      "y": 1707
+      "x": 1285,
+      "y": 1746
     },
     {
       "category": "Otros que quiero poner",
       "name": "Península Jutland",
-      "x": 1215,
-      "y": 896
+      "x": 1164,
+      "y": 907
     },
     {
       "category": "Desconocidos",
       "name": "Meseta finlandesa",
-      "x": 1628,
-      "y": 568
+      "x": 1626,
+      "y": 597
     },
     {
       "category": "Desconocidos",
       "name": "Duina del norte",
-      "x": 2002,
-      "y": 432
+      "x": 2092,
+      "y": 425
     },
     {
       "category": "Desconocidos",
       "name": "Vosgos",
-      "x": 1081,
-      "y": 1271
+      "x": 1005,
+      "y": 1299
     },
     {
       "category": "Desconocidos",
-      "name": "Etna",
-      "x": 1311,
-      "y": 1970
+      "name": "Etha"
     }
   ];
 
@@ -395,35 +401,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const REF_HEIGHT = 2152;
 
   // Convert allPlaces absolute coordinates to Percentages 0-100
-  // User feedback REVISED: "Central dots ok, Corners too near center" -> Compression.
-  // Also "Italy was too Right" (Italy is Left of Center, so "Too Right" = Pulled to Center = Compressed).
-  // Fix: EXPAND coordinates from Center.
-  // Previous linear offset removed in favor of Radial Scale.
-
-  const COORD_SCALE = 1.04; // Start with 4% expansion
-  const REF_MID_X = REF_WIDTH / 2;
-  const REF_MID_Y = REF_HEIGHT / 2;
+  // No more manual offsets or scaling needed. Data is now visually verified via Mapper V2.
 
   allPlaces.forEach(p => {
     if (p.x !== undefined && p.y !== undefined) {
-      // 1. Center logic
-      let dx = p.x - REF_MID_X;
-      let dy = p.y - REF_MID_Y;
-
-      // 2. Scale
-      dx *= COORD_SCALE;
-      dy *= COORD_SCALE;
-
-      // 3. New Absolute
-      const newX = REF_MID_X + dx;
-      const newY = REF_MID_Y + dy;
-
-      // 4. Convert to Pct
-      p.xPct = (newX / REF_WIDTH) * 100;
-      p.yPct = (newY / REF_HEIGHT) * 100;
-
-      // Store scaled absolute for click detection ref?
-      // Actually we calculate clicks based on ref... better to match p.xPct approach in handleMapClick
+      p.xPct = (p.x / REF_WIDTH) * 100;
+      p.yPct = (p.y / REF_HEIGHT) * 100;
     }
   });
 
