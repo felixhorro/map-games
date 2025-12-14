@@ -1,0 +1,222 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    background-color: #2b2b2b;
+    color: white;
+}
+
+#game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    /* Sidebar left, Map right? Or Map left, Sidebar right */
+    overflow: hidden;
+}
+
+#map-wrapper {
+    flex: 1;
+    position: relative;
+    /* Center content */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #333;
+}
+
+#map-img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    cursor: crosshair;
+}
+
+.dot {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: #ffcc00;
+    /* Default unresolved */
+    border: 2px solid #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    pointer-events: none;
+    /* Let clicks pass through to map if needed, or maybe not? */
+}
+
+.dot.correct {
+    background-color: #4CAF50;
+    z-index: 5;
+    /* Below active but above normal? */
+}
+
+#sidebar {
+    width: 250px;
+    background: #f4f4f4;
+    color: #333;
+    overflow-y: auto;
+    border-left: 2px solid #ccc;
+    /* if on right */
+    display: flex;
+    flex-direction: column;
+}
+
+#sidebar h3 {
+    padding: 10px;
+    margin: 0;
+    background: #e0e0e0;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+#places-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.place-item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.place-item:hover {
+    background-color: #ddd;
+}
+
+.place-item.failed {
+    background-color: #ffe6e6;
+    color: #cc0000;
+}
+
+.place-label {
+    position: absolute;
+    transform: translate(-50%, -150%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    text-shadow: 1px 1px 2px black;
+}
+
+.dot.active {
+    background-color: #00bcd4;
+    transform: translate(-50%, -50%) scale(1.5);
+    z-index: 20;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 188, 212, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(0, 188, 212, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 188, 212, 0);
+    }
+}
+
+#ui-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#message-box {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px 30px;
+    border-radius: 8px;
+    z-index: 100;
+    font-size: 1.2rem;
+    pointer-events: none;
+    /* Let clicks pass through? Or auto? Auto for text selection/close? */
+    text-align: center;
+    color: white;
+    /* Ensure text is visible */
+}
+
+#message-box.error {
+    color: #ff5252;
+}
+
+#message-box.success {
+    color: #4CAF50;
+}
+
+#selector-box {
+    background: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#selector-box select {
+    padding: 8px;
+    font-size: 1rem;
+    width: 250px;
+}
+
+#selector-box button {
+    padding: 8px 16px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#selector-box button:hover {
+    background-color: #1976D2;
+}
+
+#score-box {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    pointer-events: auto;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none !important;
+}

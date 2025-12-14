@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Geografía de Europa</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div id="game-container">
+        <div id="map-wrapper">
+            <img id="map-img" src="map.jpg" alt="Mapa de Europa">
+            <!-- Dots injected here -->
+
+            <!-- Keep message box separate or overlay on map? overlay is fine -->
+            <div id="message-box" class="hidden"></div>
+        </div>
+
+        <div id="sidebar">
+            <ul id="places-list">
+                <!-- List items -->
+            </ul>
+        </div>
+    </div>
+    <!-- Removed old UI overlay structures -->
+
+    <script src="game.js"></script>
+</body>
+
+</html>
