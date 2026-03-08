@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Europe Political Geography Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div id="game-container">
+        <div id="map-wrapper">
+            <div id="map-container-inner">
+                <img id="map-img" src="map.jpg" alt="Political Map of Europe">
+                <!-- Dots injected here -->
+
+                <div id="message-box" class="hidden"></div>
+            </div>
+        </div>
+
+        <div id="sidebar">
+            <div id="score-header">0/0 found</div>
+            <ul id="places-list">
+                <!-- List items -->
+            </ul>
+            <div id="sidebar-footer">
+                <button id="btn-toggle-points">Show points</button>
+                <button id="btn-toggle-solve">Solve</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+
+</html>
