@@ -45,6 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     function setupGame() {
+        // Set Page Title
+        if (config.gameName) {
+            document.title = `Map Games - ${config.gameName}`;
+        }
+
         // Set Map Source
         mapImg.src = `${gameId}/${config.mapImage}`;
         mapImg.alt = config.mapAlt || "Map";
