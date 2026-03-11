@@ -1,0 +1,20 @@
+{
+    "mapImage": "map.jpg",
+    "mapAlt": "Mapa de Europa",
+    "refWidth": 3000,
+    "refHeight": 2152,
+    "maxSelectionDist": 60,
+    "labels": {
+        "showPoints": "Mostrar puntos",
+        "hidePoints": "Ocultar puntos",
+        "solve": "Resolver",
+        "hideAnswers": "Ocultar respuestas",
+        "scoreTemplate": "{found}/{total} sitios encontrados",
+        "alreadyFound": "Ya has encontrado",
+        "clickFirst": "Primero haz clic en un punto del mapa.",
+        "correctMsg": "¡Correcto!",
+        "incorrectMsg": "Incorrecto.",
+        "nextCategory": "Siguiente categoría",
+        "gameCompleted": "¡JUEGO COMPLETADO!"
+    }
+}

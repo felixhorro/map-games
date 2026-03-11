@@ -21,17 +21,13 @@ html {
     height: 100%;
     display: flex;
     flex-direction: row;
-    /* Sidebar left, Map right? Or Map left, Sidebar right */
     overflow: hidden;
 }
 
 #map-wrapper {
     flex: 1;
     position: relative;
-    /* Maintain aspect ratio */
     width: 100%;
-    /* 3000 / 2152 approx 1.394 */
-    /* We want the map to fit within the container. */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -41,9 +37,7 @@ html {
 
 #map-container-inner {
     position: relative;
-    /* Use aspect-ratio to ensure the container always matches the map proportions */
-    /* This ensures that percentage-based dot positioning (0-100%) always aligns with the image pixels */
-    aspect-ratio: 3000 / 2152;
+    /* aspect-ratio will be set dynamically via JS style.aspectRatio */
     max-width: 100%;
     max-height: 100%;
     width: auto;
@@ -59,24 +53,19 @@ html {
 
 .dot {
     position: absolute;
-    width: 1.2%;
-    /* Relative size? or fixed px? Fixed is better for visibility usually */
     width: 12px;
     height: 12px;
     background-color: #ffcc00;
-    /* Default unresolved */
     border: 2px solid #fff;
     border-radius: 50%;
     transform: translate(-50%, -50%);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     z-index: 10;
     pointer-events: none;
-    /* Let clicks pass through to map if needed, or maybe not? */
 }
 
 .dot.hint {
     background-color: #aaa;
-    /* Grey for hints? */
     width: 8px;
     height: 8px;
     z-index: 4;
@@ -86,7 +75,68 @@ html {
 .dot.correct {
     background-color: #4CAF50;
     z-index: 5;
-    /* Below active but above normal? */
+}
+
+/* Specific styling for capitals in political game */
+.dot.capital {
+    background-color: #ff5252;
+    border-color: #fff;
+    z-index: 50;
+    width: 14px;
+    height: 14px;
+}
+
+.dot.correct.capital {
+    background-color: #ff5252;
+    border-color: #fff;
+}
+
+.dot.correct.faded {
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0.3);
+    width: 6px;
+    height: 6px;
+    z-index: 1;
+}
+
+.dot.active {
+    background-color: #00bcd4;
+    transform: translate(-50%, -50%) scale(1.5);
+    z-index: 20;
+    animation: pulse 1.5s infinite;
+}
+
+.dot.active.capital {
+    animation: pulse-capital 1.5s infinite;
+    z-index: 60;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 188, 212, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(0, 188, 212, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 188, 212, 0);
+    }
+}
+
+@keyframes pulse-capital {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.8);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 82, 82, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 82, 82, 0);
+    }
 }
 
 #sidebar {
@@ -94,13 +144,10 @@ html {
     background: #f4f4f4;
     color: #333;
     border-left: 2px solid #ccc;
-    /* Flex layout for fixed header + scrollable list */
     display: flex;
     flex-direction: column;
     height: 100%;
-    /* Ensure it fills container height to allow internal scrolling */
     overflow: hidden;
-    /* Prevent sidebar itself from scrolling */
 }
 
 #score-header {
@@ -111,7 +158,6 @@ html {
     font-weight: bold;
     font-size: 1.1rem;
     flex-shrink: 0;
-    /* Don't shrink */
 }
 
 #places-list {
@@ -119,9 +165,7 @@ html {
     padding: 0;
     margin: 0;
     overflow-y: auto;
-    /* Scroll ONLY the list */
     flex: 1;
-    /* Take remaining height */
 }
 
 #sidebar-footer {
@@ -145,6 +189,11 @@ html {
 
 #sidebar-footer button:hover {
     background: #eee;
+}
+
+#sidebar-footer button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .place-item {
@@ -174,40 +223,25 @@ html {
     white-space: nowrap;
     pointer-events: none;
     text-shadow: 1px 1px 2px black;
+    z-index: 10;
 }
 
-.dot.active {
-    background-color: #00bcd4;
-    transform: translate(-50%, -50%) scale(1.5);
-    z-index: 20;
-    animation: pulse 1.5s infinite;
+.place-label.faded {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.4);
+    text-shadow: none;
+    z-index: 2;
+    font-size: 10px;
 }
 
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(0, 188, 212, 0.7);
-    }
-
-    70% {
-        box-shadow: 0 0 0 10px rgba(0, 188, 212, 0);
-    }
-
-    100% {
-        box-shadow: 0 0 0 0 rgba(0, 188, 212, 0);
-    }
-}
-
-#ui-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.place-label.capital {
+    background: rgba(255, 82, 82, 0.9);
+    color: #fff;
+    z-index: 100;
+    font-size: 14px;
+    font-weight: bold;
+    border: 1px solid #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
 }
 
 #message-box {
@@ -221,10 +255,8 @@ html {
     z-index: 100;
     font-size: 1.2rem;
     pointer-events: none;
-    /* Let clicks pass through? Or auto? Auto for text selection/close? */
     text-align: center;
     color: white;
-    /* Ensure text is visible */
 }
 
 #message-box.error {
@@ -233,50 +265,6 @@ html {
 
 #message-box.success {
     color: #4CAF50;
-}
-
-#selector-box {
-    background: white;
-    color: black;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    pointer-events: auto;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-#selector-box select {
-    padding: 8px;
-    font-size: 1rem;
-    width: 250px;
-}
-
-#selector-box button {
-    padding: 8px 16px;
-    background-color: #2196F3;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-#selector-box button:hover {
-    background-color: #1976D2;
-}
-
-#score-box {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 10px;
-    border-radius: 5px;
-    pointer-events: auto;
-    font-weight: bold;
 }
 
 .hidden {
@@ -292,7 +280,6 @@ html {
     #sidebar {
         width: 100%;
         height: 40%;
-        /* Dedicate bottom portion to list */
         border-left: none;
         border-top: 2px solid #ccc;
     }
@@ -300,7 +287,6 @@ html {
     #map-wrapper {
         width: 100%;
         height: 60%;
-        /* Map takes top portion */
     }
 
     #map-img {
@@ -321,6 +307,5 @@ html {
 
     #sidebar-footer button {
         flex: 1;
-        /* Equal width buttons */
     }
 }
