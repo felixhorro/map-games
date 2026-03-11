@@ -10,24 +10,22 @@ We use a "Source-to-Docs" sync strategy. The `src/` directory contains the sourc
 
 ### 1. Local Development
 - All changes are made in the `src/` directory.
-- Tools like the mapper are used to generate coordinates, which are then manually updated in `src/{game}/places.json`.
+- Use local tools (like the mapper) to generate coordinates.
+- Verify changes locally before pushing.
 
-### 2. Manual Deployment (Sync)
-To "deploy" the current state of the code to the docs folder, run the deployment script:
+### 2. Automated Deployment (GitHub Actions)
+The project is automatically deployed to GitHub Pages via GitHub Actions on every push to the `main` branch.
+
+- **Workflow:** [.github/workflows/deploy.yml](file:///Users/felix.horro/projects/europe/.github/workflows/deploy.yml)
+- **Deployment Source:** The `src/` directory.
+- **Trigger:** Push to `main` branch.
+
+### 3. Manual Sync (Legacy)
+The `./scripts/deploy.sh` script was previously used to sync `src/` to `docs/`. This is now deprecated in favor of GitHub Actions, but can still be used for local previews if needed.
 
 ```bash
 ./scripts/deploy.sh
 ```
-
-This script:
-- Clears the `docs/` folder.
-- Synchronizes all files from `src/`.
-- Prepares the app for static hosting (e.g., GitHub Pages).
-
-### 3. Automated Deployment (Future)
-If the project moves to GitHub Pages, we can automate this via GitHub Actions:
-- On push to `main`, run `deploy.sh`.
-- Deploy the resulting `docs/` folder to the `gh-pages` branch (or serve directly from main/docs).
 
 ## Checkpoints
 Before deploying, ensure:
