@@ -1,9 +1,16 @@
-# Project Specifications
+# Specifications
 
-This directory contains the specifications, plans, and technical documentation for the Map Games project, following Spec-Driven Development standards.
+This directory contains the specifications for the Map Games project, following Spec-Driven Development (SDD) standards.
 
-## Contents
+## Functional Specifications
 
-- `spec-template.md`: Template for new feature specifications.
-- `architecture.md`: High-level architecture overview.
-- `deployment.md`: Detailed deployment process.
+User-facing feature descriptions, requirements, and behaviors.
+
+- **[functional/template.md](file:///Users/felix.horro/projects/europe/specs/functional/template.md)**: Template for new functional specs.
+
+## Technical Specifications
+
+Implementation details, architecture overview, and deployment processes.
+
+- **[technical/architecture.md](file:///Users/felix.horro/projects/europe/specs/technical/architecture.md)**: High-level overview of the game engine and data structure.
+- **[technical/deployment.md](file:///Users/felix.horro/projects/europe/specs/technical/deployment.md)**: Details on the build and release process.
