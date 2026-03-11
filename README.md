@@ -11,7 +11,7 @@ This project follows a clean organization inspired by Spec-Driven Development st
   - `/political`: Game configuration and places data.
   - `/physical`: Game configuration and places data.
   - (Each game folder contains `config.json` and `places.json`).
-- **[/public](file:///Users/felix.horro/projects/europe/public)**: The folder served to the user. This is generated/synced from `src` using the deployment script.
+- **[/docs](file:///Users/felix.horro/projects/europe/docs)**: The folder served to the user. This is generated/synced from `src` using the deployment script.
 - **[/specs](file:///Users/felix.horro/projects/europe/specs)**: Functional and technical specifications for the project.
 - **[/tools](file:///Users/felix.horro/projects/europe/tools)**: Development utilities, such as the map coordinate mapper.
 - **[/scripts](file:///Users/felix.horro/projects/europe/scripts)**: Automation scripts, including deployment.
@@ -19,7 +19,7 @@ This project follows a clean organization inspired by Spec-Driven Development st
 
 ## Deployment
 
-To sync changes from `src` to `public`, run:
+To sync changes from `src` to `docs`, run:
 
 ```bash
 ./scripts/deploy.sh
@@ -27,5 +27,5 @@ To sync changes from `src` to `public`, run:
 
 ## How to Run
 
-1. Open `public/index.html` in your browser.
+1. Open `docs/index.html` in your browser.
 2. Use the query parameter `?game=political` or `?game=physical` to switch between games.

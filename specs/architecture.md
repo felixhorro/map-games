@@ -29,7 +29,7 @@ Shared resources like fonts, common images, and the unified JS/CSS.
 
 ## Directory Structure
 - `/src`: Source code and data.
-- `/public`: Build/distribution folder (produced by `deploy.sh`).
+- `/docs`: Build/distribution folder (produced by `deploy.sh`).
 - `/specs`: Project specifications and plans.
 - `/tools`: Utility tools (e.g., the coordinate mapper).
 - `/scripts`: Automation and deployment scripts.

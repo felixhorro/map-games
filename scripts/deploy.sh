@@ -2,17 +2,17 @@
 
 # Configuration
 SRC_DIR="src"
-PUBLIC_DIR="public"
+DOCS_DIR="docs"
 
 echo "🚀 Starting deployment..."
 
-# 1. Clean public directory (keeping .gitkeep)
-find "$PUBLIC_DIR" -mindepth 1 ! -name ".gitkeep" -delete
+# 1. Clean docs directory (keeping .gitkeep)
+find "$DOCS_DIR" -mindepth 1 ! -name ".gitkeep" -delete
 
-# 2. Copy all files from src to public
+# 2. Copy all files from src to docs
 # We use -r to copy recursively. 
 # We include index.html, assets/, and the game folders (political, physical).
-cp -r "$SRC_DIR/"* "$PUBLIC_DIR/"
+cp -r "$SRC_DIR/"* "$DOCS_DIR/"
 
-echo "✅ Deployment complete! Clean files copied to $PUBLIC_DIR"
-echo "You can now open $PUBLIC_DIR/index.html?game=political in your browser."
+echo "✅ Deployment complete! Clean files copied to $DOCS_DIR"
+echo "You can now open $DOCS_DIR/index.html?game=political in your browser."
