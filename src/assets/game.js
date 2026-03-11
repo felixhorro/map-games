@@ -68,6 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
         validPlaces = allPlaces.filter(p => p.x !== undefined && p.y !== undefined);
         masterRemaining = [...validPlaces];
 
+        // Set Button Labels
+        if (config.labels) {
+            btnTogglePoints.innerText = config.labels.showPoints;
+            btnToggleSolve.innerText = config.labels.solve;
+        }
+
         // determine initial category
         if (config.categories && config.categories.length > 0) {
             currentCategory = config.categories[0];
