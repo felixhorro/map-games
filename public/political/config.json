@@ -1,0 +1,23 @@
+{
+    "mapImage": "map.jpg",
+    "mapAlt": "Political Map of Europe",
+    "refWidth": 1200,
+    "refHeight": 978,
+    "categories": [
+        "Countries",
+        "Capitals"
+    ],
+    "labels": {
+        "showPoints": "Show points",
+        "hidePoints": "Hide points",
+        "solve": "Solve",
+        "hideAnswers": "Hide answers",
+        "scoreTemplate": "{category}: {found}/{total} found",
+        "alreadyFound": "Already found",
+        "clickFirst": "First click a dot on the map.",
+        "correctMsg": "Correct!",
+        "incorrectMsg": "Incorrect.",
+        "nextCategory": "Next category",
+        "gameCompleted": "GAME COMPLETED!"
+    }
+}
