@@ -7,6 +7,8 @@ This directory contains the specifications for the Map Games project, following 
 User-facing feature descriptions, requirements, and behaviors.
 
 - **[functional/template.md](file:///Users/felix.horro/projects/europe/specs/functional/template.md)**: Template for new functional specs.
+- **[functional/page-title.md](file:///Users/felix.horro/projects/europe/specs/functional/page-title.md)**: Dynamic page title specification.
+
 
 ## Technical Specifications
 
