@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreHeader = document.getElementById('score-header');
     const btnTogglePoints = document.getElementById('btn-toggle-points');
     const btnToggleSolve = document.getElementById('btn-toggle-solve');
+    const btnRestart = document.getElementById('btn-restart');
 
     // 4. Load Game Data
     Promise.all([
@@ -72,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (config.labels) {
             btnTogglePoints.innerText = config.labels.showPoints;
             btnToggleSolve.innerText = config.labels.solve;
+            btnRestart.innerText = config.labels.restart || "Restart";
         }
 
         // determine initial category
@@ -92,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mapImg.addEventListener('click', handleMapClick);
         btnTogglePoints.addEventListener('click', toggleHints);
         btnToggleSolve.addEventListener('click', toggleSolve);
+        btnRestart.addEventListener('click', restartGame);
     }
 
     // --- Actions ---
@@ -116,6 +119,41 @@ document.addEventListener('DOMContentLoaded', () => {
             mapImg.style.pointerEvents = 'auto';
             placesList.style.pointerEvents = 'auto';
         }
+        renderDots();
+    }
+
+    function restartGame() {
+        const confirmMsg = config.labels.confirmRestart || "Are you sure you want to restart the game? Your current progress will be lost.";
+        if (!confirm(confirmMsg)) return;
+
+        // Reset state
+        isSolved = false;
+        showHints = false;
+        currentTarget = null;
+        
+        // Re-determine initial category and remaining places
+        if (config.categories && config.categories.length > 0) {
+            currentCategory = config.categories[0];
+            remainingPlaces = validPlaces.filter(p => p.category === currentCategory);
+        } else {
+            currentCategory = null;
+            remainingPlaces = [...validPlaces];
+        }
+        
+        masterRemaining = [...validPlaces];
+
+        // Reset UI state
+        btnToggleSolve.innerText = config.labels.solve;
+        btnTogglePoints.disabled = false;
+        btnTogglePoints.innerText = config.labels.showPoints;
+        mapImg.style.pointerEvents = 'auto';
+        placesList.style.pointerEvents = 'auto';
+
+        // Clear messages
+        if (messageBox) messageBox.classList.add("hidden");
+
+        renderSidebar();
+        updateScoreUI();
         renderDots();
     }
 

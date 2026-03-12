@@ -19,6 +19,8 @@
         "correctMsg": "Correct!",
         "incorrectMsg": "Incorrect.",
         "nextCategory": "Next category",
-        "gameCompleted": "GAME COMPLETED!"
+        "gameCompleted": "GAME COMPLETED!",
+        "restart": "Restart",
+        "confirmRestart": "Are you sure you want to restart the game? Your current progress will be lost."
     }
 }
