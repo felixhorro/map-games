@@ -16,7 +16,7 @@ This project follows a clean organization inspired by Spec-Driven Development st
   - `/functional`: User-facing features and requirements.
   - `/technical`: Architecture, deployment, and implementation details.
 - **[/tools](file:///Users/felix.horro/projects/europe/tools)**: Development utilities, such as the map coordinate mapper.
-- **[/scripts](file:///Users/felix.horro/projects/europe/scripts)**: Automation scripts, including deployment.
+- **[/scripts](file:///Users/felix.horro/projects/europe/scripts)**: Automation scripts, including deployment and the local server.
 - **[/tests](file:///Users/felix.horro/projects/europe/tests)**: Placeholders for automated tests to verify game logic.
 
 ## Deployment
@@ -27,7 +27,14 @@ To sync changes from `src` to `docs`, run:
 ./scripts/deploy.sh
 ```
 
-## How to Run
+## How to Run Locally
 
-1. Open `docs/index.html` in your browser.
-2. Use the query parameter `?game=political` or `?game=physical` to switch between games.
+1. Start the local server:
+   ```bash
+   ./scripts/serve.sh
+   ```
+   *Note: By default, it serves the `docs/` folder. To serve the `src/` folder for development, use `./scripts/serve.sh src`.*
+
+2. Open the URL provided in your terminal (usually [http://localhost:8080](http://localhost:8080)).
+
+3. Use the query parameter `?game=political` or `?game=physical` to switch between games.
